@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import BooksService from "./services/BooksService";
+import React, { useState } from 'react';
+import BooksService from './services/BooksService';
 
-import "./styles/style.scss";
+import './styles/style.scss';
+import BookCard from './components/bookCard/BookCard';
 
 function App() {
   const booksService = new BooksService();
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
   const [booksInfo, setBooksInfo] = useState([]);
 
   // console.log(booksInfo);
@@ -15,10 +16,19 @@ function App() {
     setInputValue((inputValue) => (inputValue = e.target.value));
     if (!e.target.value) return;
 
-    booksService.getSearchBooks(e.target.value).then((res) => setBooksInfo(res));
+    booksService.getSearchBooks(e.target.value).then(onLoadedBooks).catch(onError);
 
     // console.log(e.target.value);
     // console.log(inputValue);
+  };
+
+  const onLoadedBooks = (newBooks) => {
+    setBooksInfo((books) => (books = newBooks));
+  };
+
+  const onError = () => {
+    console.log('Массив пуст');
+    setBooksInfo([]);
   };
 
   return (
@@ -34,7 +44,11 @@ function App() {
             placeholder="Search books..."
           />
           <p>Books titles: </p>
-          <div className="app__books"></div>
+          <div className="app__books">
+            {booksInfo.map((item) => {
+              return <BookCard key={item.id} title={item.title} descr={item.descr} image={item.image} />;
+            })}
+          </div>
         </div>
       </div>
     </div>

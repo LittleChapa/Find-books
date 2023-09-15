@@ -1,5 +1,5 @@
 class BooksService {
-  _apiKey = "AIzaSyAovvO72JN7pb7P2HPla7HJa9LyPtf_LBs";
+  _apiKey = 'AIzaSyCrH_RKBJ0_Y1jR6ZskkBDVs--yWCOsI9g';
 
   getResource = async (url) => {
     let res = await fetch(url);
@@ -12,16 +12,16 @@ class BooksService {
   };
 
   getSearchBooks = async (title) => {
-    const res = await this.getResource(
-      `https://www.googleapis.com/books/v1/volumes?q=${title}&key=${this._apiKey}`
-    );
+    const res = await this.getResource(`https://www.googleapis.com/books/v1/volumes?q=${title}&key=${this._apiKey}`);
     return res.items.map(this._transformBooks);
   };
 
   _transformBooks = (books) => {
     return {
+      id: books.id,
       title: books.volumeInfo.title,
       descr: books.volumeInfo.description,
+      image: books.volumeInfo.imageLinks.thumbnail,
     };
   };
 }

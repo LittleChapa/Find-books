@@ -43,7 +43,6 @@ function App() {
             type="text"
             placeholder="Search books..."
           />
-          <p>Books titles: </p>
           <div className="app__books">
             {booksInfo.map((item) => {
               return <BookCard key={item.id} title={item.title} descr={item.descr} image={item.image} />;

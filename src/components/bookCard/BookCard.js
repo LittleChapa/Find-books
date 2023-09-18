@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 
-import "./bookCard.scss";
+import './bookCard.scss';
 
 function BookCard({ title, descr, image }) {
   const getText = (text, num) => {
     if (!text) return;
     let newText = text.slice(0, num);
-    if (newText.length < text.length) {
-      newText += "...";
+    if (newText.length < text.length && text.length - newText.length >= 5) {
+      newText += '...';
     }
     return newText;
   };
@@ -33,7 +33,7 @@ function BookCard({ title, descr, image }) {
     <div className="bookCard">
       <img className="bookCard__image" src={image} alt="" />
       <div className="bookCard__text">
-        <h2 className="bookCard__title">{getText(title, 15)}</h2>
+        <h2 className="bookCard__title">{getText(title, 10)}</h2>
         <p className="bookCard__descr">{getText(descr, 35)}</p>
       </div>
     </div>

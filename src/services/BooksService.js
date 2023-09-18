@@ -1,7 +1,8 @@
-import errorImg from "../images/errImg.png";
+import errorImg from '../images/errImg.png';
 
 class BooksService {
-  _apiKey = "AIzaSyCplC0EtGawOReZ79uOHW7WlrJ8wGamliQ";
+  _apiKey = 'AIzaSyC2PWvHPXiwWuRGDncz5HccwQHCBptBxr4';
+  _maxRes = '10';
 
   getResource = async (url) => {
     let res = await fetch(url);
@@ -13,10 +14,12 @@ class BooksService {
     return await res.json();
   };
 
-  getSearchBooks = async (title) => {
+  getSearchBooks = async (title, startIndex) => {
     // console.log(title);
     const res = await this.getResource(
-      `https://www.googleapis.com/books/v1/volumes?q=${title.replace(/ /g, "+")}&key=${this._apiKey}`
+      `https://www.googleapis.com/books/v1/volumes?q=${title.replace(/ /g, '+')}&startIndex=${startIndex}&maxResults=${
+        this._maxRes
+      }&key=${this._apiKey}`
     );
     return await res.items.map(this._transformBooks);
   };
@@ -25,7 +28,7 @@ class BooksService {
     return {
       id: books.id,
       title: books.volumeInfo.title,
-      descr: books.volumeInfo.description,
+      descr: !books.volumeInfo.description ? 'Нет описания' : books.volumeInfo.description,
       image: !books.volumeInfo.imageLinks ? errorImg : books.volumeInfo.imageLinks.thumbnail,
     };
   };

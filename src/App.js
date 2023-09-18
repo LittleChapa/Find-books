@@ -1,42 +1,78 @@
-import React, { useState } from "react";
-import BooksService from "./services/BooksService";
+import React, { useEffect, useState } from 'react';
+import BooksService from './services/BooksService';
 
-import "./styles/style.scss";
-import BookCard from "./components/bookCard/BookCard";
+import './styles/style.scss';
+import BookCard from './components/bookCard/BookCard';
+import Skeleton from './components/skeleton/Skeleton';
 
 function App() {
   const booksService = new BooksService();
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState('');
   const [booksInfo, setBooksInfo] = useState([]);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
 
-  // console.log(booksInfo);
+  const skeletons = [
+    { id: 1 },
+    { id: 2 },
+    { id: 3 },
+    { id: 4 },
+    { id: 5 },
+    { id: 6 },
+    { id: 7 },
+    { id: 8 },
+    { id: 9 },
+    { id: 10 },
+  ];
 
-  const takeInputValue = (e) => {
-    setInputValue((inputValue) => {
-      inputValue = e.target.value;
-    });
-    if (!e.target.value) return;
+  useEffect(() => {
+    onSearch();
+  }, [inputValue]);
 
-    booksService.getSearchBooks(e.target.value).then(onLoadedBooks).catch(onError);
+  const onChange = (e) => {
+    setInputValue((inputValue) => (inputValue = e.target.value));
+  };
 
-    booksInfo.forEach((i) => {
-      console.log(i.image);
-    });
-
-    // console.log(e.target.value);
-    // console.log(inputValue);
+  const onSearch = () => {
+    setIsError(false);
+    setIsLoading(true);
+    booksService.getSearchBooks(inputValue, startIndex).then(onLoadedBooks).then(newBooks).catch(onError);
   };
 
   const onLoadedBooks = (newBooks) => {
     setBooksInfo((books) => (books = newBooks));
+    setIsLoading(false);
+  };
+
+  const newBooks = (newBooks) => {
+    setBooksInfo((books) => [...books, ...newBooks]);
   };
 
   const onError = (e) => {
-    // console.log("Массив пуст");
     console.log(e);
     setBooksInfo([]);
+    setIsError(true);
   };
+
+  const onBtn = () => {
+    setStartIndex((startIndex) => startIndex + 10);
+  };
+
+  const books =
+    !isLoading && !isError
+      ? booksInfo.map((item) => {
+          return <BookCard key={item.id} title={item.title} descr={item.descr} image={item.image} />;
+        })
+      : null;
+  const loading =
+    isLoading && !isError
+      ? skeletons.map(({ id }) => {
+          return <Skeleton key={id} />;
+        })
+      : null;
+  const error = isError && !isLoading ? <p className="app__error">Книг не найдено!</p> : null;
 
   return (
     <div className="app">
@@ -45,20 +81,21 @@ function App() {
           <h1 className="app__title">Searching books</h1>
           <input
             value={inputValue}
-            onChange={takeInputValue}
+            onChange={onChange}
             className="app__input"
             type="text"
             placeholder="Search books..."
           />
           <div className="app__books">
-            {booksInfo.map((item) => {
-              try {
-                return <BookCard key={item.id} title={item.title} descr={item.descr} image={item.image} />;
-              } catch (err) {
-                <BookCard key={item.id} title={item.title} descr={item.descr} image={""} />;
-              }
-            })}
+            {inputValue ? books : null}
+            {inputValue ? loading : null}
+            {inputValue ? error : null}
           </div>
+          {inputValue ? (
+            <button onClick={onBtn} className="app__btn">
+              More
+            </button>
+          ) : null}
         </div>
       </div>
     </div>

@@ -12,7 +12,7 @@ function App() {
   const [booksInfo, setBooksInfo] = useState([]);
   const [isError, setIsError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [startIndex, setStartIndex] = useState(0);
+  const [startIndex, setStartIndex] = useState(10);
 
   const skeletons = [
     { id: 1 },
@@ -29,16 +29,17 @@ function App() {
 
   useEffect(() => {
     onSearch();
-  }, [inputValue]);
+  }, [inputValue]); 
 
   const onChange = (e) => {
+    setStartIndex(10)
     setInputValue((inputValue) => (inputValue = e.target.value));
   };
 
   const onSearch = () => {
     setIsError(false);
     setIsLoading(true);
-    booksService.getSearchBooks(inputValue, startIndex).then(onLoadedBooks).then(newBooks).catch(onError);
+    booksService.getSearchBooks(inputValue, 0).then(onLoadedBooks).catch(onError);
   };
 
   const onLoadedBooks = (newBooks) => {
@@ -58,6 +59,8 @@ function App() {
 
   const onBtn = () => {
     setStartIndex((startIndex) => startIndex + 10);
+    booksService.getSearchBooks(inputValue, startIndex).then(newBooks).catch(onError);
+    console.log(booksInfo);
   };
 
   const books =

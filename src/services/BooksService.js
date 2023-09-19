@@ -1,7 +1,7 @@
 import errorImg from '../images/errImg.png';
 
 class BooksService {
-  _apiKey = 'AIzaSyC2PWvHPXiwWuRGDncz5HccwQHCBptBxr4';
+  _apiKey = 'AIzaSyCrH_RKBJ0_Y1jR6ZskkBDVs--yWCOsI9g';
   _maxRes = '10';
 
   getResource = async (url) => {

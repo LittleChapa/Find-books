@@ -29,6 +29,7 @@ function App() {
 
   useEffect(() => {
     onSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue]); 
 
   const onChange = (e) => {
